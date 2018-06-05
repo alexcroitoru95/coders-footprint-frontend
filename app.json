@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Coder's Footprint",
+    "description":
+      "Have you ever thought about your digital footprint? Try our app now for free to see if you have a weak or strong coder's footprint.",
+    "slug": "coders-footprint",
+    "privacy": "unlisted",
+    "sdkVersion": "27.0.0",
+    "platforms": ["ios", "android"],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo_expo.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    }
+  }
+}
