@@ -22,9 +22,11 @@ const INITIAL_STATE = {
   GitHub_Organizations: 0,
   GitHub_Followers: 0,
   GitHub_Subscriptions: 0,
+  GitHub_Location: '',
   StackOverflow_Questions: 0,
   StackOverflow_Answers: 0,
   StackOverflow_Comments: 0,
+  StackOverflow_Location: '',
   Total_Points_Final_Value: 0,
   Nickname: ''
 };

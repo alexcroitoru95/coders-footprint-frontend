@@ -25,11 +25,14 @@ export const deleteUserData = user => dispatch => {
     headers: requestHeaders
   })
     .then(function(response) {
-      if (response.status === 200) {
-        emailSentObject.emailSent = true;
+      console.log(response.status);
+      if (response.status === 200 || response.status === 204) {
+        dataDeletedObject.dataDeleted = true;
+        console.log(dataDeletedObject);
         dispatch({ type: DATA_DELETED, payload: dataDeletedObject });
       } else {
-        emailSentObject.emailSent = false;
+        dataDeletedObject.dataDeleted = false;
+        console.log(dataDeletedObject);
         dispatch({ type: DATA_DELETED, payload: dataDeletedObject });
       }
     })

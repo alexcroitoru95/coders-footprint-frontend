@@ -28,9 +28,9 @@ export const revokeAppPermissions = () => async dispatch => {
       })
       .catch(error => {
         console.log(error);
-        Alert.alert('FB Graph API Error!', 'The error is ' + error, [
-          { text: 'Ok', onPress: () => {} }
-        ]);
+        // Alert.alert('FB Graph API Error!', 'The error is ' + error, [
+        //   { text: 'Ok', onPress: () => {} }
+        // ]);
       });
 
     AsyncStorage.removeItem('fb_token');
@@ -66,9 +66,9 @@ export const revokeAppPermissions = () => async dispatch => {
       })
       .catch(error => {
         console.log(error);
-        Alert.alert('Google+ API Error!', 'The error is ' + error, [
-          { text: 'Ok', onPress: () => {} }
-        ]);
+        // Alert.alert('Google+ API Error!', 'The error is ' + error, [
+        //   { text: 'Ok', onPress: () => {} }
+        // ]);
       });
 
     AsyncStorage.removeItem('google_token');

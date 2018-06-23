@@ -24,9 +24,11 @@ const accountsObject = {
   GitHub_Organizations: 0,
   GitHub_Followers: 0,
   GitHub_Subscriptions: 0,
+  GitHub_Location: '',
   StackOverflow_Questions: 0,
   StackOverflow_Answers: 0,
   StackOverflow_Comments: 0,
+  StackOverflow_Location: '',
   Total_Points_Final_Value: 0,
   Nickname: ''
 };
@@ -266,6 +268,7 @@ const checkGitHubAccount = dispatch => {
           accountsObject.GitHub_Organizations = response.data.Organizations;
           accountsObject.GitHub_Repositories = response.data.TotalRepositories;
           accountsObject.GitHub_Subscriptions = response.data.Subscriptions;
+          accountsObject.GitHub_Location = response.data.Location;
           accountsObject.Total_Points_Final_Value += response.data.Total_Points;
           console.log(accountsObject);
 
@@ -350,6 +353,7 @@ const checkStackOverflowMoreDetails = dispatch => {
           accountsObject.StackOverflow_Questions = response.data.Questions;
           accountsObject.StackOverflow_Answers = response.data.Answers;
           accountsObject.StackOverflow_Comments = response.data.Comments;
+          accountsObject.StackOverflow_Location = response.data.Location;
           accountsObject.Total_Points_Final_Value += response.data.Total_Points;
           console.log(accountsObject);
 
@@ -515,6 +519,7 @@ const clearAccounts = dispatch => {
   accountsObject.GitHub_Tested = false;
   accountsObject.GitHub_Username = '';
   accountsObject.GitHub_Subscriptions = 0;
+  accountsObject.GitHub_Location = '';
   accountsObject.BugCrowd = false;
   accountsObject.BugCrowd_Tested = false;
   accountsObject.Google = false;
@@ -529,6 +534,7 @@ const clearAccounts = dispatch => {
   accountsObject.StackOverflow_Answers = 0;
   accountsObject.StackOverflow_Comments = 0;
   accountsObject.StackOverflow_Questions = 0;
+  accountsObject.StackOverflow_Location = '';
   accountsObject.StackOverflow_Tested = false;
   accountsObject.DZone = false;
   accountsObject.DZone_Tested = false;

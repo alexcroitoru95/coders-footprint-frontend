@@ -16,11 +16,15 @@ import {
   TouchableHighlight,
   TextInput,
   Keyboard,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  NativeModules,
+  Platform
 } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+const { StatusBarManager } = NativeModules;
+const TOPBAR_HEIGHT = StatusBarManager.HEIGHT;
 
 class WelcomeScreen extends Component {
   constructor(props) {
@@ -127,7 +131,10 @@ class WelcomeScreen extends Component {
               <HorizontalLineWithText />
               <View style={styles.inputContainer}>
                 <TextInput
+                  autoCapitalize="none"
                   clearTextOnFocus={true}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
                   keyboardType="email-address"
                   placeholder="Enter custom e-mail..."
                   placeholderTextColor="#778899"
@@ -191,12 +198,26 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10
+    ...Platform.select({
+      ios: {
+        marginTop: 10
+      },
+      android: {
+        marginTop: TOPBAR_HEIGHT
+      }
+    })
   },
   centerContainer: {
     flex: 2,
     alignItems: 'center',
-    marginTop: 20
+    ...Platform.select({
+      ios: {
+        marginTop: 20
+      },
+      android: {
+        marginTop: 5
+      }
+    })
   },
   buttonContainer: {
     marginTop: 10
@@ -206,7 +227,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: SCREEN_WIDTH - 100,
-    marginTop: 20
+    ...Platform.select({
+      ios: {
+        marginTop: 20
+      },
+      android: {
+        marginTop: 10
+      }
+    })
   },
   backgroundImage: {
     width: SCREEN_WIDTH,
@@ -220,7 +248,14 @@ const styles = StyleSheet.create({
     fontFamily: 'League Spartan',
     fontSize: 25,
     textAlign: 'center',
-    top: 20,
+    ...Platform.select({
+      ios: {
+        top: 25
+      },
+      android: {
+        top: 10
+      }
+    }),
     color: 'white'
   },
   overlay: {

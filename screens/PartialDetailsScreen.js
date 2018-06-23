@@ -22,17 +22,24 @@ import {
   TextInput,
   TouchableHighlight,
   Keyboard,
-  Alert
+  Alert,
+  NativeModules,
+  Platform,
+  BackHandler
 } from 'react-native';
 
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+const { StatusBarManager } = NativeModules;
+const TOPBAR_HEIGHT = StatusBarManager.HEIGHT;
 
 class PartialDetailsScreen extends Component {
   constructor(props) {
     super(props);
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
 
     this.userObject = {
       userEmail: props.user.email,
@@ -72,6 +79,10 @@ class PartialDetailsScreen extends Component {
     stackDisplayNameInputText: '',
     loading: false
   };
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+  }
 
   static getDerivedStateFromProps(nextProps) {
     if (
@@ -144,6 +155,15 @@ class PartialDetailsScreen extends Component {
     return name;
   }
 
+  handleBackButtonClick = () => {
+    Alert.alert(
+      'For your information',
+      'In order to go back you need to press Retype Email.\n\nThank you!',
+      [{ text: 'Ok', onPress: () => {} }]
+    );
+    return true;
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -183,6 +203,8 @@ class PartialDetailsScreen extends Component {
               <View style={styles.inputContainer}>
                 <TextInput
                   clearTextOnFocus={true}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
                   placeholder="StackOverflow DisplayName"
                   placeholderTextColor="#778899"
                   style={{
@@ -288,7 +310,14 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     flex: 1,
-    marginTop: 10,
+    ...Platform.select({
+      ios: {
+        marginTop: 10
+      },
+      android: {
+        marginTop: TOPBAR_HEIGHT
+      }
+    }),
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -322,10 +351,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: SCREEN_WIDTH - 100,
-    marginTop: 20
+    ...Platform.select({
+      ios: {
+        marginTop: 20
+      },
+      android: {
+        marginTop: 10
+      }
+    })
   },
   bottomContainer: {
-    width: SCREEN_WIDTH - 240,
+    ...Platform.select({
+      ios: {
+        width: SCREEN_WIDTH - 240
+      },
+      android: {
+        width: SCREEN_WIDTH - 220
+      }
+    }),
     height: 40
   }
 });

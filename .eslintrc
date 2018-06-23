@@ -8,6 +8,7 @@
   "extends": "airbnb",
   "rules": {
     "comma-dangle": 0,
+    "prefer-arrow-callback": "off",
     "linebreak-style": 0,
     "no-underscore-dangle": 0,
     "react/prop-types": 0,

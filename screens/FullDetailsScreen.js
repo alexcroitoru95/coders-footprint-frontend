@@ -21,15 +21,22 @@ import {
   TextInput,
   TouchableHighlight,
   Keyboard,
-  Alert
+  Alert,
+  BackHandler,
+  NativeModules,
+  Platform
 } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+const { StatusBarManager } = NativeModules;
+const TOPBAR_HEIGHT = StatusBarManager.HEIGHT;
 
 class FullDetailsScreen extends Component {
   constructor(props) {
     super(props);
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
 
     this.userObject = {
       userEmail: props.user.email,
@@ -54,10 +61,12 @@ class FullDetailsScreen extends Component {
       GitHub_Repositories: props.accountsInformation.GitHub_Repositories,
       GitHub_Organizations: props.accountsInformation.GitHub_Organizations,
       GitHub_Followers: props.accountsInformation.GitHub_Followers,
+      GitHub_Location: props.accountsInformation.GitHub_Location,
       GitHub_Subscriptions: props.accountsInformation.GitHub_Subscriptions,
       StackOverflow_Questions: props.accountsInformation.StackOverflow_Questions,
       StackOverflow_Answers: props.accountsInformation.StackOverflow_Answers,
       StackOverflow_Comments: props.accountsInformation.StackOverflow_Comments,
+      StackOverflow_Location: props.accountsInformation.StackOverflow_Location,
       Total_Points_Final_Value: props.accountsInformation.Total_Points_Final_Value,
       Nickname: props.accountsInformation.Nickname
     };
@@ -93,6 +102,10 @@ class FullDetailsScreen extends Component {
     stackDisplayNameInputText: '',
     loading: false
   };
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+  }
 
   static getDerivedStateFromProps(nextProps) {
     if (
@@ -210,6 +223,15 @@ class FullDetailsScreen extends Component {
     }
   }
 
+  handleBackButtonClick = () => {
+    Alert.alert(
+      'For your information',
+      'In order to go back you need to press RevokeAppPermissions.\n\nThank you!',
+      [{ text: 'Ok', onPress: () => {} }]
+    );
+    return true;
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -231,6 +253,8 @@ class FullDetailsScreen extends Component {
               <View style={styles.inputContainer}>
                 <TextInput
                   clearTextOnFocus={true}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
                   placeholder="StackOverflow DisplayName"
                   placeholderTextColor="#778899"
                   style={{
@@ -336,7 +360,14 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     flex: 1,
-    marginTop: 10,
+    ...Platform.select({
+      ios: {
+        marginTop: 10
+      },
+      android: {
+        marginTop: TOPBAR_HEIGHT
+      }
+    }),
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -369,10 +400,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: SCREEN_WIDTH - 100,
-    marginTop: 20
+    ...Platform.select({
+      ios: {
+        marginTop: 20
+      },
+      android: {
+        marginTop: 10
+      }
+    })
   },
   bottomContainer: {
-    width: SCREEN_WIDTH - 210,
+    ...Platform.select({
+      ios: {
+        width: SCREEN_WIDTH - 210
+      },
+      android: {
+        width: SCREEN_WIDTH - 200
+      }
+    }),
     height: 40
   }
 });

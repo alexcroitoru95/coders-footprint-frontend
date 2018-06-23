@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, StatusBar, Alert } from 'react-native';
+import { StyleSheet, View, StatusBar } from 'react-native';
 import { ScreenOrientation } from 'expo';
 import { Provider } from 'react-redux';
 import { store, persistor } from './store';
@@ -14,7 +14,6 @@ ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT_UP);
 export default class App extends Component {
   constructor() {
     super();
-
     this.waitLoader();
 
     this.logo = require('./assets/images/logo_loader.png');
@@ -40,16 +39,16 @@ export default class App extends Component {
           persistor={persistor}
           onBeforeLift={() => StoreProvider.loadAssetsAsync(store)}
         >
-          <Loader
+          {/* <Loader
             isLoaded={this.state.animationDone}
             imageSource={this.logo}
             backgroundStyle={styles.loadingBackgroundStyle}
-          >
-            <View style={styles.container}>
-              <AppStack />
-              <StatusBar barStyle="light-content" />
-            </View>
-          </Loader>
+          > */}
+          <View style={styles.container}>
+            <AppStack />
+            <StatusBar barStyle="light-content" />
+          </View>
+          {/* </Loader> */}
         </PersistGate>
       </Provider>
     );

@@ -22,7 +22,9 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   TouchableHighlight,
-  Alert
+  Alert,
+  Platform,
+  BackHandler
 } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -36,6 +38,8 @@ const userDataForGDPRReducer = {
 class ReviewScreen extends Component {
   constructor(props) {
     super(props);
+
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
 
     this.points = this.props.accountsInformation.Total_Points_Final_Value;
     this.getNickname(this.points);
@@ -51,6 +55,10 @@ class ReviewScreen extends Component {
     gitHubToastVisible: false,
     loading: false
   };
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+  }
 
   static getDerivedStateFromProps(nextProps) {
     if (nextProps.gdprReducerInformation.dataDeleted) {
@@ -85,8 +93,8 @@ class ReviewScreen extends Component {
     this.setState({ loading: true });
     await this.props.checkPlatformsAction(clearAccountsObject);
     await this.props.userAgreementAction('stackOverflowDisplayNameDeclined');
-    await this.props.revokeAppPermissions();
     this.props.navigation.navigate('WelcomeScreen');
+    await this.props.revokeAppPermissions();
   }
 
   getNickname(points) {
@@ -101,6 +109,14 @@ class ReviewScreen extends Component {
     }
     if (points >= 85 && points <= 100) {
       this.props.accountsInformation.Nickname = 'God of Coders';
+    }
+  }
+
+  checkLocation(location) {
+    if (location === null || location === '') {
+      return 'Not Listed';
+    } else {
+      return location;
     }
   }
 
@@ -131,6 +147,8 @@ class ReviewScreen extends Component {
                   {'\n'}Followers:
                   {this.props.accountsInformation.GitHub_Followers}
                   {'\n'}Subscriptions: {this.props.accountsInformation.GitHub_Subscriptions}
+                  {'\n'}Location:{' '}
+                  {this.checkLocation(this.props.accountsInformation.GitHub_Location)}
                 </Toast>
               </View>
             </TouchableHighlight>
@@ -183,6 +201,8 @@ class ReviewScreen extends Component {
                   {this.props.accountsInformation.StackOverflow_Questions}
                   {'\n'}Answers: {this.props.accountsInformation.StackOverflow_Answers}
                   {'\n'}Comments: {this.props.accountsInformation.StackOverflow_Comments}
+                  {'\n'}Location:{' '}
+                  {this.checkLocation(this.props.accountsInformation.StackOverflow_Location)}
                 </Toast>
               </View>
             </TouchableHighlight>
@@ -247,6 +267,15 @@ class ReviewScreen extends Component {
 
     await this.props.sendEmailWithData(userDataForGDPRReducer);
   }
+
+  handleBackButtonClick = () => {
+    Alert.alert(
+      'For your information',
+      'In order to go back you need to press RevokeAppPermissions.\n\nThank you!',
+      [{ text: 'Ok', onPress: () => {} }]
+    );
+    return true;
+  };
 
   showStackOverflowToast = () => {
     this.setState({ stackOverflowToastVisible: true });
@@ -436,7 +465,7 @@ class ReviewScreen extends Component {
                   onPress={() => {
                     Alert.alert(
                       'Revoke All Permissions',
-                      'If you press I Accept we will revoke all permissions that you gave if you logged in with Facebook or Google+, also we will delete this sessions data, including your email, your result, your name and profile picture that has been processed on Coder`s Footprint.\nIf you don`t want this please press Cancel.\n',
+                      'If you press I Accept we will revoke all permissions that you gave if you logged in with Facebook or Google+, also we will delete this sessions data, including your email, your result, your name and profile picture that has been processed on Coder`s Footprint. The data that we previously mentioned will not be deleted from our database, for that please press Delete All My Data.\nIf you don`t want this please press Cancel.\n',
                       [
                         {
                           text: 'I Accept',
@@ -541,7 +570,14 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
   bottomContainer: {
-    width: SCREEN_WIDTH - 210,
+    ...Platform.select({
+      ios: {
+        width: SCREEN_WIDTH - 210
+      },
+      android: {
+        width: SCREEN_WIDTH - 190
+      }
+    }),
     height: 130
   },
   mainTableHead: {
