@@ -29,6 +29,8 @@ const accountsObject = {
   StackOverflow_Answers: 0,
   StackOverflow_Comments: 0,
   StackOverflow_Location: '',
+  StackOverflow_SameDisplayName: false,
+  StackOverflowGetNameBySearchingId: '',
   Total_Points_Final_Value: 0,
   Nickname: ''
 };
@@ -36,7 +38,7 @@ const accountsObject = {
 const userObject = {
   userEmail: '',
   userBearerToken: '',
-  userStackOverflowDisplayName: '',
+  userStackOverflowDisplayName: null,
   platform: ''
 };
 
@@ -67,8 +69,23 @@ export const checkPlatformsAction = user => async dispatch => {
     case 'StackOverflow':
       // await checkStackOverflowAccount(dispatch);
       // if (user.StackOverflow === true) {
+      const checkIfStackOverflowDisplayNameIsIDRegex = /^[0-9]*$/;
+      const checkIfStackOverflowDisplayNameIsStringRegex = /^[a-zA-Z ]*$/;
+
       if (userObject.userStackOverflowDisplayName !== '') {
-        await checkStackOverflowMoreDetails(dispatch);
+        if (
+          checkIfStackOverflowDisplayNameIsIDRegex.test(userObject.userStackOverflowDisplayName) ===
+          true
+        ) {
+          await checkStackOverflowMoreDetailsSearchById(dispatch);
+        }
+        if (
+          checkIfStackOverflowDisplayNameIsStringRegex.test(
+            userObject.userStackOverflowDisplayName
+          ) === true
+        ) {
+          await checkStackOverflowMoreDetailsSearchByString(dispatch);
+        }
       } else {
         accountsObject.StackOverflow_Tested = true;
         accountsObject.StackOverflow = false;
@@ -330,7 +347,7 @@ const checkStackOverflowAccount = dispatch => {
     });
 };
 
-const checkStackOverflowMoreDetails = dispatch => {
+const checkStackOverflowMoreDetailsSearchByString = dispatch => {
   const stackOverflowParams = {
     DisplayName: userObject.userStackOverflowDisplayName,
     Email: userObject.userEmail
@@ -354,6 +371,45 @@ const checkStackOverflowMoreDetails = dispatch => {
           accountsObject.StackOverflow_Answers = response.data.Answers;
           accountsObject.StackOverflow_Comments = response.data.Comments;
           accountsObject.StackOverflow_Location = response.data.Location;
+          accountsObject.StackOverflow_SameDisplayName = response.data.MultipleUsersWithSameName;
+          accountsObject.Total_Points_Final_Value += response.data.Total_Points;
+          console.log(accountsObject);
+
+          dispatch({ type: STORE_ACCOUNTS, payload: accountsObject });
+        }
+      }
+    })
+    .catch(error => {
+      accountsObject.StackOverflow_Tested = true;
+      console.log(error);
+    });
+};
+
+const checkStackOverflowMoreDetailsSearchById = dispatch => {
+  const stackOverflowParams = {
+    UserId: userObject.userStackOverflowDisplayName,
+    Email: userObject.userEmail
+  };
+
+  requestHeaders.Authorization = userObject.userBearerToken;
+
+  axios({
+    method: 'POST',
+    url: 'https://codersfootprintapp.azurewebsites.net/api/StackOverflow/SearchUserById',
+    timeout: 180000,
+    data: stackOverflowParams,
+    headers: requestHeaders
+  })
+    .then(function(response) {
+      accountsObject.StackOverflow_Tested = true;
+      if (response.status === 200) {
+        accountsObject.StackOverflow = true;
+        if (accountsObject.StackOverflow === true) {
+          accountsObject.StackOverflow_Questions = response.data.Questions;
+          accountsObject.StackOverflow_Answers = response.data.Answers;
+          accountsObject.StackOverflow_Comments = response.data.Comments;
+          accountsObject.StackOverflow_Location = response.data.Location;
+          accountsObject.StackOverflowGetNameBySearchingId = response.data.DisplayName;
           accountsObject.Total_Points_Final_Value += response.data.Total_Points;
           console.log(accountsObject);
 
@@ -535,6 +591,8 @@ const clearAccounts = dispatch => {
   accountsObject.StackOverflow_Comments = 0;
   accountsObject.StackOverflow_Questions = 0;
   accountsObject.StackOverflow_Location = '';
+  accountsObject.StackOverflow_SameDisplayName = false;
+  accountsObject.StackOverflowGetNameBySearchingId = '';
   accountsObject.StackOverflow_Tested = false;
   accountsObject.DZone = false;
   accountsObject.DZone_Tested = false;

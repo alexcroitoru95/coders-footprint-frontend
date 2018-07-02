@@ -56,6 +56,16 @@ class ReviewScreen extends Component {
     loading: false
   };
 
+  componentDidMount() {
+    if (this.props.accountsInformation.StackOverflow_SameDisplayName === true) {
+      Alert.alert(
+        'Same Display Name',
+        'Multiple users with same display name have been detected on StackOverflow!\n Please try again and enter id of user, if this is not you.\n\n Thank you!',
+        [{ text: 'Ok', onPress: () => {} }]
+      );
+    }
+  }
+
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
   }
@@ -176,6 +186,17 @@ class ReviewScreen extends Component {
         }
         break;
       case 'StackOverflow':
+        const stackOverflowUsersWithSameName = '';
+        const displayNameRegex = /^[0-9]*$/;
+
+        if (this.props.accountsInformation.StackOverflow_SameDisplayName === true) {
+          stackOverflowUsersWithSameName = 'Yes';
+        } else {
+          stackOverflowUsersWithSameName = 'No';
+        }
+        if (displayNameRegex.test(this.props.userInformation.stackOverflowDisplayName) === true) {
+          this.props.userInformation.stackOverflowDisplayName = this.props.accountsInformation.stackOverflowGetNameBySearchingId;
+        }
         if (this.props.accountsInformation.StackOverflow === true) {
           return (
             <TouchableHighlight onPress={this.showStackOverflowToast}>
@@ -197,6 +218,7 @@ class ReviewScreen extends Component {
                 >
                   StackOverflow User Info{'\n'}Display Name :{' '}
                   {this.props.userInformation.stackOverflowDisplayName}
+                  {'\n'}Users With Same Name: {stackOverflowUsersWithSameName}
                   {'\n'}Questions:
                   {this.props.accountsInformation.StackOverflow_Questions}
                   {'\n'}Answers: {this.props.accountsInformation.StackOverflow_Answers}

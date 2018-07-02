@@ -27,6 +27,8 @@ const INITIAL_STATE = {
   StackOverflow_Answers: 0,
   StackOverflow_Comments: 0,
   StackOverflow_Location: '',
+  StackOverflow_SameDisplayName: false,
+  StackOverflowGetNameBySearchingId: '',
   Total_Points_Final_Value: 0,
   Nickname: ''
 };

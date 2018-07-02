@@ -67,6 +67,7 @@ class FullDetailsScreen extends Component {
       StackOverflow_Answers: props.accountsInformation.StackOverflow_Answers,
       StackOverflow_Comments: props.accountsInformation.StackOverflow_Comments,
       StackOverflow_Location: props.accountsInformation.StackOverflow_Location,
+      StackOverflow_SameDisplayName: props.accountsInformation.StackOverflow_SameDisplayName,
       Total_Points_Final_Value: props.accountsInformation.Total_Points_Final_Value,
       Nickname: props.accountsInformation.Nickname
     };
@@ -255,7 +256,7 @@ class FullDetailsScreen extends Component {
                   clearTextOnFocus={true}
                   autoCorrect={false}
                   underlineColorAndroid="transparent"
-                  placeholder="StackOverflow DisplayName"
+                  placeholder="Stack DisplayName or Id"
                   placeholderTextColor="#778899"
                   style={{
                     flex: 1,

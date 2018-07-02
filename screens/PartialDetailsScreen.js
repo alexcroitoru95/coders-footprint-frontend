@@ -205,7 +205,7 @@ class PartialDetailsScreen extends Component {
                   clearTextOnFocus={true}
                   autoCorrect={false}
                   underlineColorAndroid="transparent"
-                  placeholder="StackOverflow DisplayName"
+                  placeholder="Stack DisplayName or Id"
                   placeholderTextColor="#778899"
                   style={{
                     flex: 1,
